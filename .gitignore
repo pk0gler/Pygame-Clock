@@ -191,4 +191,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-src/templates
+kogler/build
