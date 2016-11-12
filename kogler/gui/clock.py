@@ -78,20 +78,20 @@ class Clock(object):
                          "hover_font_color": cfc
                          }
 
-    BUTTON_STYLE_BRWN = {"hover_color": (62,39,35),
-                         "clicked_color": (93,64,55),
+    BUTTON_STYLE_BRWN = {"hover_color": (62, 39, 35),
+                         "clicked_color": (93, 64, 55),
                          "clicked_font_color": cfc,
                          "hover_font_color": cfc
                          }
 
-    BUTTON_STYLE_INDIGO = {"hover_color": (26,35,126),
-                           "clicked_color": (48,63,159),
+    BUTTON_STYLE_INDIGO = {"hover_color": (26, 35, 126),
+                           "clicked_color": (48, 63, 159),
                            "clicked_font_color": cfc,
                            "hover_font_color": cfc
                            }
 
-    BUTTON_STYLE_ORANGE = {"hover_color": (230,81,0),
-                           "clicked_color": (245,124,0),
+    BUTTON_STYLE_ORANGE = {"hover_color": (230, 81, 0),
+                           "clicked_color": (245, 124, 0),
                            "clicked_font_color": cfc,
                            "hover_font_color": cfc
                            }
@@ -114,18 +114,18 @@ class Clock(object):
             raise TypeError("Incompatible Colour design")
 
         # Set attributes and values
-        self.size = size;
+        self.size = size
         self.width = size[0]
         self.height = size[1]
         self.center = self.Wcenter, self.Hcenter = int(size[0] / 2), int(size[1] / 2)
-        self.schema = clr_schema;
+        self.schema = clr_schema
         self.analog = True
         self.time = time
         self.radius = int(self.width / 3.0)
         self.mode = 0
         self.smooth = False
-        self.startQuad_w = 0;
-        self.startQuad_h = 0;
+        self.startQuad_w = 0
+        self.startQuad_h = 0
 
         # Initialize pygame
         # Same outcome as initializing every module by itself
@@ -143,9 +143,11 @@ class Clock(object):
                                     text="Orange", **self.BUTTON_STYLE_ORANGE)
         self.btn_cl_indigo = Button((70 + 60, 615, 60, 50), self.BUTTON_STYLE_INDIGO.get("clicked_color"), self.set_i,
                                     text="Indigo", **self.BUTTON_STYLE_INDIGO)
-        self.btn_cl_brown = Button((self.width - 50 - 60 - 20 - 60, 615, 60, 50), self.BUTTON_STYLE_BRWN.get("clicked_color"), self.set_b,
+        self.btn_cl_brown = Button((self.width - 50 - 60 - 20 - 60, 615, 60, 50),
+                                   self.BUTTON_STYLE_BRWN.get("clicked_color"), self.set_b,
                                    text="Brown", **self.BUTTON_STYLE_BRWN)
-        self.btn_cl_teal = Button((self.width - 50 - 60, 615, 60, 50), self.BUTTON_STYLE_TEAL.get("clicked_color"), self.set_t,
+        self.btn_cl_teal = Button((self.width - 50 - 60, 615, 60, 50), self.BUTTON_STYLE_TEAL.get("clicked_color"),
+                                  self.set_t,
                                   text="Teal", **self.BUTTON_STYLE_TEAL)
 
         # self.button.rect.center = (self.screen_rect.centerx, 630)
@@ -165,7 +167,6 @@ class Clock(object):
     def set_i(self):
         self.schema = Clock.CLR_SCHEMA_INDIGO
 
-
     def change_mode(self):
         self.mode = 0 if self.mode == 1 else 1
 
@@ -181,7 +182,7 @@ class Clock(object):
         self.seconds = 0
         font = pg.font.Font(None, 36)
         pg.time.set_timer(pg.USEREVENT + 1, 1000)
-        self.mode = 0;
+        self.mode = 0
 
         while 1:
             self.change = False
@@ -216,7 +217,7 @@ class Clock(object):
             self.btn_cl_brown.update(self.screen)
             self.btn_cl_teal.update(self.screen)
             self.btn_cl_indigo.update(self.screen)
-            pg.draw.rect(self.screen, self.hex_to_rgb(self.schema.get("a-cl-bd")),(0,50,self.width,46))
+            pg.draw.rect(self.screen, self.hex_to_rgb(self.schema.get("a-cl-bd")), (0, 50, self.width, 46))
             if self.mode == 0 and self.smooth is False:
                 fps_display = font.render("ANALOG UHR", 1, self.cfc)
                 self.screen.blit(fps_display, (20, 60))
@@ -229,10 +230,12 @@ class Clock(object):
             elif self.mode == 0 and self.smooth is True:
                 fps_display = font.render("ANALOG UHR", 1, self.cfc)
                 self.screen.blit(fps_display, (20, 60))
+                mode = font.render("SMOOTH MODE", 1, self.cfc)
+                self.screen.blit(mode, (self.width/2-60, 60))
                 self.draw_clock()
                 self.draw_min_hand_smooth()
                 self.draw_sec_hand_smooth()
-                self.draw_std_hand()
+                self.draw_std_hand_smooth()
                 pg.draw.circle(self.screen, self.hex_to_rgb(self.schema.get("bg")), (self.Wcenter, self.Hcenter),
                                int(2), 0)
                 self.screen.blit(fps_display, (20, 60))
@@ -248,7 +251,7 @@ class Clock(object):
                 self.draw_clock_dig()
             fps = "FPS: " + str(clock.get_fps())
             fps_display = font.render(fps[:7], 1, self.cfc)
-            self.screen.blit(fps_display, (self.width-120, 60))
+            self.screen.blit(fps_display, (self.width - 120, 60))
 
             pg.display.flip()
 
@@ -260,11 +263,15 @@ class Clock(object):
 
     def draw_clock_dig(self):
         font = pg.font.Font(None, 85)
-        pg.draw.rect(self.screen, self.hex_to_rgb(self.schema.get("a-cl-bd")),(self.Wcenter-self.radius,self.Hcenter-self.radius/2,self.radius*2,self.radius))
-        pg.draw.rect(self.screen, self.hex_to_rgb(self.schema.get("accent")),(self.Wcenter-self.radius+15,self.Hcenter-self.radius/2+15,self.radius*2-30,self.radius-30),3)
-        pg.draw.rect(self.screen, self.hex_to_rgb(self.schema.get("accent2")),(self.Wcenter-self.radius,self.Hcenter-self.radius/2,self.radius*2,self.radius),3)
+        pg.draw.rect(self.screen, self.hex_to_rgb(self.schema.get("a-cl-bd")),
+                     (self.Wcenter - self.radius, self.Hcenter - self.radius / 2, self.radius * 2, self.radius))
+        pg.draw.rect(self.screen, self.hex_to_rgb(self.schema.get("accent")), (
+        self.Wcenter - self.radius + 15, self.Hcenter - self.radius / 2 + 15, self.radius * 2 - 30, self.radius - 30),
+                     3)
+        pg.draw.rect(self.screen, self.hex_to_rgb(self.schema.get("accent2")),
+                     (self.Wcenter - self.radius, self.Hcenter - self.radius / 2, self.radius * 2, self.radius), 3)
         fps_display = font.render(datetime.now().time().strftime("%H : %M : %S"), 1, self.cfc)
-        self.screen.blit(fps_display, (self.Wcenter-self.radius+50, self.Hcenter-30))
+        self.screen.blit(fps_display, (self.Wcenter - self.radius + 50, self.Hcenter - 30))
 
     def draw_help(self):
         pg.draw.rect(self.screen, self.hex_to_rgb(self.schema.get("accent")), (
@@ -289,7 +296,7 @@ class Clock(object):
         self.screen.blit(font.render("- - - - - - - - - - - - - - - - - - - -", 1, (0, 0, 0)), (
             (self.Wcenter - (self.Wcenter - 43) / 2) + 20, (self.Hcenter - (self.Hcenter - 115) / 2) + 65 + 50 + 30))
 
-        temp = self.schema;
+        temp = self.schema
 
         self.schema = Clock.CLR_SCHEMA_TEAL
         pg.draw.rect(self.screen, self.hex_to_rgb(self.schema.get("a-cl-bd")),
@@ -320,11 +327,11 @@ class Clock(object):
                 self.startQuad_w = 0
 
     def draw_sec_hand(self):
-        pg.draw.line(self.screen, (183,28,28), (self.Wcenter, self.Hcenter),
+        pg.draw.line(self.screen, (183, 28, 28), (self.Wcenter, self.Hcenter),
                      self.calc_sec_pos(), 2)
 
     def draw_sec_hand_smooth(self):
-        pg.draw.line(self.screen, (183,28,28), (self.Wcenter, self.Hcenter),
+        pg.draw.line(self.screen, (183, 28, 28), (self.Wcenter, self.Hcenter),
                      self.calc_sec_pos_smooth(), 2)
 
     def draw_min_hand(self):
@@ -334,6 +341,10 @@ class Clock(object):
     def draw_min_hand_smooth(self):
         pg.draw.line(self.screen, self.hex_to_rgb(self.schema.get("accent")), (self.Wcenter, self.Hcenter),
                      self.calc_min_pos_smooth(), 5)
+
+    def draw_std_hand_smooth(self):
+        pg.draw.line(self.screen, self.hex_to_rgb(self.schema.get("accent")), (self.Wcenter, self.Hcenter),
+                     self.calc_std_pos_smooth(), 9)
 
     def draw_std_hand(self):
         pg.draw.line(self.screen, self.hex_to_rgb(self.schema.get("accent")), (self.Wcenter, self.Hcenter),
@@ -387,15 +398,18 @@ class Clock(object):
         # return (self.Wcenter, self.Hcenter-self.radius)
 
     def calc_min_pos_smooth(self):
-        """milli = int(datetime.now().time().microsecond / 1000)
-        sec = int(datetime.now().time().strftime("%S")) + milli / 1000
-        min = int(datetime.now().time().strftime("%S")) + (sec /100)
-        print(min)
-        angle = (360 * (min - 15) / 60) / 180 * pi
-        temp = (round(cos(angle) * self.radius + self.Wcenter), round(sin(angle) * 160 + self.Hcenter))
-        return temp
-        # return (self.Wcenter, self.Hcenter-self.radius)"""
-        return self.calc_min_pos()
+        sec = int(datetime.now().time().strftime("%S"))
+        temp = sec / 60
+        mi = int(datetime.now().time().strftime("%M"))
+        angle = (360 * (mi + temp - 15) / 60) / 180 * pi
+        return round(cos(angle) * 160 + self.Wcenter), round(sin(angle) * 160 + self.Hcenter)
+
+    def calc_std_pos_smooth(self):
+        mi = int(datetime.now().time().strftime("%M"))
+        temp = mi / 60
+        st = int(datetime.now().time().strftime("%H"))
+        angle = (360 * (st + temp - 15) * 5 / 60) / 180 * pi
+        return round(cos(angle) * 125 + self.Wcenter), round(sin(angle) * 125 + self.Hcenter)
 
     def calc_min_pos(self):
         mi = int(datetime.now().time().strftime("%M"))
